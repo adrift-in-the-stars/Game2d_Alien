@@ -23,7 +23,28 @@ class Bullet(Sprite):
         self.y -= self.settings.bullet_speed # Move o projétil para cima diminuindo a coordenada y
         self.rect.y = self.y # Atualiza a posição do rect do projétil com base na nova coordenada y
         
-        
     def draw_bullet(self):
         """Desenha o projétil na tela."""
         pygame.draw.rect(self.screen, self.color, self.rect) # Desenha um retângulo representando o projétil na tela usando as coordenadas do rect
+
+    def logica_de_projeteis(self)->None:
+        for bullet in (
+                self.bullets.sprites()
+            ):  # Atualiza a posição de cada projétil no grupo de projéteis
+                bullet.draw_bullet()  # Desenha cada projétil na tela
+
+        self.bullets.update()  # Atualiza a posição de cada projétil no grupo de projéteis
+        for (
+            bullet
+        ) in self.bullets.copy():  # Verifica se algum projétil saiu da tela
+            if (
+                bullet.rect.bottom <= 0
+            ):  # Se o projétil saiu da tela (parte inferior do retângulo do projétil é menor ou igual a 0)
+                self.bullets.remove(
+                    bullet
+                )  # Remove o projétil do grupo de projéteis
+
+    def abate(self)->None:
+            pygame.sprite.groupcollide(
+                self.bullets, self.aliens, True, True
+            )  # Verifica as colisões entre os projéteis e os alienígenas, removendo ambos quando uma colisão é detectada
