@@ -1,18 +1,14 @@
+import pygame
+import sys
 from alien import Alien
 
-class Gerenciador_de_frota():
-
-    def movimentar_aliens(self)->None:
-        for alien in self.aliens.sprites():
-                if (
-                    alien.check_edges()
-                ):  # Verifica se algum alienígena atingiu a borda da tela
-                    for alien in (
-                        self.aliens.sprites()
-                    ):  # Atualiza a posição de cada alienígena no grupo de alienígenas
-                        alien.rect.y += self.settings.fleet_drop_speed  # Move cada alienígena para baixo com base na velocidade de descida da frota
-                    self.settings.fleet_direction *= -1  # Inverte a direção da frota para que os alienígenas se movam para o lado oposto na próxima atualização
-                    break  # Sai do loop após encontrar o primeiro alienígena que atingiu a borda da tela
+class FleetManager:
+    """Gerencia a frota de aliens"""
+    def __init__(self, screen, settings, ship)->None:
+        self.screen = screen
+        self.settings = settings
+        self.ship = ship
+        self.bullet = pygame.spriteGroup()
 
     def create_fleet(self)->None:
         """Cria uma frota de alienígenas."""
@@ -39,3 +35,27 @@ class Gerenciador_de_frota():
                 alien.y = alien_height + 2 * alien_height * row_number
                 alien.rect.y = alien.y
                 self.aliens.add(alien)
+
+    def _update_aliens(self)->None:
+        self._check_fleet_edges()
+        self.aliens.update()
+        self._check_ship_collision()
+
+    def _check_fleet_edges(self)->None:
+        """Responde se um alien alcançar a borda"""
+        for alien in self.aliens.sprites():
+            if (alien.check_edges()):
+                self._change_fleet_direction()
+                break
+
+    def _change_fleet_direction(self)->None:
+        """Desce a forta e muda a direção"""
+        for alien in self.aliens.sprites():
+            alien.rect.y += self.settings.fleet_drop_speed
+        self.settings.fleet_direction *= -1
+
+    def _check_ship_collision(self)->None:
+        """Verifica colosão da nave com um alien"""
+        if pygame.sprite.spritecollideany(self.ship, self.aliens):
+            print("A nave foi atingida!")
+            sys.exit()
