@@ -4,7 +4,7 @@ import sys
 
 class GameEventHandler:
     """Eventos do teclado"""
-    def __init__(self,ship, bullet_manager)->None:
+    def __init__(self, ship, bullet_manager)->None:
         self.ship = ship
         self.bullet_manager = bullet_manager
 
@@ -28,7 +28,7 @@ class GameEventHandler:
         elif (event.key == pygame.K_SPACE): # Verifica se a tecla pressionada é a barra de espaço
             self.bullet_manager._fire_bullet()
 
-    def _handlekeyup(self, event: pygame.event.Event)->None:
+    def _handle_keyup(self, event: pygame.event.Event)->None:
         """Eventos de soltar teclas"""
         if (event.key == pygame.K_RIGHT):  # Verifica se a tecla soltada é a seta para a direita
             self.ship.moving_right = False
